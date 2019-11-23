@@ -1,0 +1,75 @@
+* {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  position: relative;
+  font-size: 1.5rem;
+}
+
+hr {
+  border-left: none;
+  border-right: none;
+}
+
+noscript, .welcome, .browsing {
+  cursor: default;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  z-index: 5;
+}
+
+noscript, .welcome {
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(221, 221, 221);
+}
+
+.welcome {
+  z-index: 10;
+}
+
+noscript {
+  z-index: 15;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+}
+
+.toolbar {
+  padding: 5px 10px;
+  width: calc(100% - 20px);
+  display: flex;
+  align-items: center;
+}
+
+.url {
+  margin-left: 5px;
+  padding: 4px;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.stream {
+  height: calc(100% - 38px);
+  position: relative;
+  overflow-y: hidden;
+}
+
+.hover {
+  height: 100%;
+  position: absolute;
+  user-select: none;
+}
+
+.video {
+  width: unset;
+}
