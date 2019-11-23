@@ -27,6 +27,13 @@ Run following command to start server:
 xvfb-run -a --server-args="-screen 0 3840x2160x24 -ac -nolisten tcp +extension RANDR" yarn start
 ```
 
+## Resources
+
+- Puppeteer API - https://pptr.dev
+- Chrome DevTools Protocol - https://chromedevtools.github.io/devtools-protocol/
+- WebRTC API - https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API
+- SDP RFC - [rfc3264](https://tools.ietf.org/html/rfc3264), [rfc4566](https://tools.ietf.org/html/rfc4566)
+
 ## License
 
 This project is licensed under [GNU Affero General Public License v3.0 only](LICENSE).
