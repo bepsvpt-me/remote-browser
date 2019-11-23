@@ -1,7 +1,8 @@
 const os = require('os');
 const turn = require('node-turn');
+const credentials = require('../credentials');
 
-module.exports = new turn({
+const config = {
   authMech: 'long-term',
   credentials: {},
   debugLevel: 'WARN',
@@ -12,4 +13,8 @@ module.exports = new turn({
   realm: os.hostname(),
   maxAllocateLifetime: 3600,
   defaultAllocatetLifetime: 600,
-});
+};
+
+config.credentials[credentials.username] = credentials.password;
+
+module.exports = new turn(config);
