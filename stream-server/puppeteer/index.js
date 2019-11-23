@@ -8,7 +8,7 @@ module.exports = async ({ width, height, token, scale }) => {
       '--autoplay-policy=no-user-gesture-required',
       '--block-new-web-contents',
       '--disable-gpu',
-      // '--kiosk',
+      '--kiosk',
       '--no-default-browser-check',
       '--no-recovery-component',
       isRoot() ? '--no-sandbox' : '',
