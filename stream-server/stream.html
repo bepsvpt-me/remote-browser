@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Remote Browser Streaming</title>
+    <script src="socket.io.js"></script>
+    <script>
+    const query = new URLSearchParams(window.location.search);
+
+    (async () => {
+      window.socket = io(`http${parseInt(query.get('secure'), 10) ? 's' : ''}://${query.get('host')}:${query.get('port')}`, {
+        query: {
+          token: query.get('token'),
+          type: 'server',
+        },
+      });
+
+      window.stream = await navigator.mediaDevices.getDisplayMedia({
+        video: {
+          width: window.innerWidth,
+          height: window.innerHeight,
+        }
+      });
+
+      window.rtc = new RTCPeerConnection({
+        iceServers: [{
+          urls: `turn:${query.get('host')}:3478`,
+          username: query.get('username'),
+          credential: query.get('password'),
+        }],
+      });
+
+      window.rtc.onicecandidate = (e) => {
+        if (e.candidate) {
+          socket.emit('candidate', e.candidate);
+        }
+      };
+
+      window.rtc.onnegotiationneeded = async () => {
+        const offer = await window.rtc.createOffer();
+
+        offer.sdp = `${offer.sdp}b=AS:2147483\r\n`;
+
+        await window.rtc.setLocalDescription(offer);
+
+        window.socket.emit('offer', window.rtc.localDescription);
+      };
+
+      window.socket.on('candidate', (data) => {
+        window.rtc.addIceCandidate(new RTCIceCandidate(data));
+      });
+
+      window.socket.on('answer', (data) => {
+        window.rtc.setRemoteDescription(new RTCSessionDescription(data));
+      });
+
+      window.stream.getTracks().forEach((track) => {
+        window.rtc.addTrack(track, window.stream);
+      });
+    })();
+    </script>
+  </head>
+  <body></body>
+</html>
