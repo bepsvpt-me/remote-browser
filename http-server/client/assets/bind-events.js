@@ -35,6 +35,10 @@ const bindEvents = (socket) => {
   // keyboard event
 
   document.addEventListener('keydown', (e) => {
+    if (['Backspace'].includes(e.key)) {
+      e.preventDefault();
+    }
+
     socket.emit('keydown', e.key);
   });
 
