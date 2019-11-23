@@ -45,6 +45,10 @@ const bindEvents = (socket) => {
   // wheel event
 
   document.addEventListener('wheel', (e) => {
+    e.preventDefault();
+
     socket.emit('wheel', { x: e.deltaX, y: e.deltaY });
+  }, {
+    passive: false
   });
 };
