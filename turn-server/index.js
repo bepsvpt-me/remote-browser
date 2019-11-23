@@ -5,7 +5,7 @@ module.exports = new turn({
   authMech: 'long-term',
   credentials: {},
   debugLevel: 'WARN',
-  listeningIps: [address],
+  listeningIps: ['0.0.0.0'],
   listeningPort: 3478,
   maxPort: 65535,
   minPort: 49152,
