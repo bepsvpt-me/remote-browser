@@ -1,11 +1,17 @@
-const turn = require('node-turn');
 const credentials = require('../credentials');
+const os = require('os');
+const turn = require('node-turn');
+
+const interfaces = Object.values(os.networkInterfaces())
+  .flat()
+  .filter((i) => !i.internal && i.family === 'IPv4')
+  .map((i) => i.address);
 
 const config = {
   authMech: 'long-term',
   credentials: {},
   debugLevel: 'WARN',
-  listeningIps: ['0.0.0.0'],
+  listeningIps: interfaces,
   listeningPort: 3478,
   maxPort: 65535,
   minPort: 49152,
