@@ -1,4 +1,3 @@
-const os = require('os');
 const turn = require('node-turn');
 const credentials = require('../credentials');
 
@@ -10,7 +9,7 @@ const config = {
   listeningPort: 3478,
   maxPort: 65535,
   minPort: 49152,
-  realm: os.hostname(),
+  realm: process.env.HOST,
   maxAllocateLifetime: 3600,
   defaultAllocatetLifetime: 600,
 };
