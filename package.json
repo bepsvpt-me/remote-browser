@@ -1,0 +1,20 @@
+{
+  "name": "@bepsvpt/remote-browser",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "AGPL-3.0-only",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "console-stamp": "^0.2.9",
+    "crypto-random-string": "^3.0.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "ip": "^1.1.5",
+    "is-root": "^2.1.0",
+    "node-turn": "^0.0.4",
+    "puppeteer": "^2.0.0",
+    "socket.io": "^2.3.0"
+  }
+}
