@@ -73,7 +73,7 @@ module.exports = (socket) => {
       socket.emit('navigation', browse.mainFrame().url());
     });
 
-    browse.goto('https://www.google.com');
+    browse.goto('https://duckduckgo.com');
 
     launched = true;
 
