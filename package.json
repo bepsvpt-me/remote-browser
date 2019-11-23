@@ -13,6 +13,7 @@
     "express": "^4.17.1",
     "ip": "^1.1.5",
     "is-root": "^2.1.0",
+    "js-yaml": "^3.13.1",
     "node-turn": "^0.0.4",
     "puppeteer": "^2.0.0",
     "socket.io": "^2.3.0"
