@@ -2,6 +2,16 @@
 
 Using WebRTC to connect to puppeteer which running on remote server.
 
+## Notice
+
+This project is still under developing, open issue if you encounter any bug. 
+
+Following is known bug:
+
+- Sound is not support now.
+- Can not type non ASCII character, like Chinese or Japanese.
+- Can not navigate to previous or next page.
+
 ## Installation
 
 1. clone this repo `git clone https://github.com/bepsvpt/remote-browser.git`
