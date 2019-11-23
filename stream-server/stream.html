@@ -15,10 +15,7 @@
       });
 
       window.stream = await navigator.mediaDevices.getDisplayMedia({
-        video: {
-          width: window.innerWidth,
-          height: window.innerHeight,
-        }
+        video: true
       });
 
       window.rtc = new RTCPeerConnection({
