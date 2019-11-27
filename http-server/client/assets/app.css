@@ -48,8 +48,8 @@ noscript {
 
 .network {
   text-align: right;
-  min-width: 56px;
-  width: 56px;
+  min-width: 66px;
+  width: 66px;
   white-space: nowrap;
 }
 
@@ -75,6 +75,7 @@ noscript {
   height: 100%;
   position: absolute;
   user-select: none;
+  z-index: 1;
 }
 
 .video {
