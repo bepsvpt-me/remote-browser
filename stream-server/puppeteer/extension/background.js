@@ -49,11 +49,7 @@ chrome.tabs.onUpdated.addListener((id, info, tab) => {
     rtc.onnegotiationneeded = async () => {
       const offer = await rtc.createOffer();
 
-      offer.sdp = `${offer.sdp}b=AS:9999999\r\n`;
-
-      offer.sdp = offer.sdp.replace('96 97 98 99', '98 99');
-
-      offer.sdp = offer.sdp.split("\r\n").filter((type) => !(type.includes(':96') || type.includes(':97'))).join("\r\n");
+      // offer.sdp = `${offer.sdp}b=AS:9999999\r\n`;
 
       await rtc.setLocalDescription(offer);
 
