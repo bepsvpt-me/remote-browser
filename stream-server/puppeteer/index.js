@@ -15,7 +15,7 @@ module.exports = async ({ width, height, token, scale }) => {
       isRoot() ? '--no-sandbox' : '',
       '--suppress-message-center-popups',
       `--user-data-dir=chrome-user-data/${token}`,
-      `--window-size=${width + 1},${height + 45}`,
+      `--window-size=${width},${height}`,
       '--whitelisted-extension-id=aahdpjnamionemlcfkodembopehdcipg'
     ],
     defaultViewport: { width, height, deviceScaleFactor: scale },
