@@ -1,0 +1,18 @@
+{
+  "name": "Stream",
+  "version": "1.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3YBM7SQXcwHA1U4jwKY+xD24E8gdRCB+7Gy4JPZyRLpsY2rOS2d3xIZ9XoTuh4llgtjdX1KjoSttXPnWH9S+xzKbRtvdcPCypTnofaUudLoOdyDd5iQqrDsKILNH2oqugdNoIvpc5lCBMvadcIUgu7W+6H8dRkrpL2MHBH9vx3pbYlO94h11AaZWSu4q8nIfOXRFTSEV4ASxkIlK0xY+ZJ2ve0LkAM+hgbYm+Px/VfH/VlLdkPhWNRpR9lNf+gmyTiWeJFmoNOF+2YwhDQ0IBRc6eWqhHGyie+4BaoIfYDItfXtIBEfrYYlfC8wUV91AvQhyladutPSX5OZOjNgn8QIDAQAB",
+  "background": {
+    "persistent": true,
+    "scripts": [
+      "socket.io.js",
+      "background.js"
+    ]
+  },
+  "permissions": [
+    "tabs",
+    "tabCapture",
+    "<all_urls>"
+  ],
+  "manifest_version": 2
+}
