@@ -31,6 +31,7 @@ xvfb-run -a --server-args="-screen 0 3840x2160x24 -ac -nolisten tcp +extension R
 
 - Puppeteer API - https://pptr.dev
 - Chrome DevTools Protocol - https://chromedevtools.github.io/devtools-protocol/
+- Chromium Command Line Switches - https://peter.sh/experiments/chromium-command-line-switches/
 - WebRTC API - https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API
 - SDP RFC - [rfc3264](https://tools.ietf.org/html/rfc3264), [rfc4566](https://tools.ietf.org/html/rfc4566)
 
