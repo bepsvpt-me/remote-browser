@@ -1,6 +1,5 @@
 const credentials = require('../credentials');
 const ipTool = require('ip');
-const path = require('path');
 const puppeteer = require('./puppeteer');
 
 module.exports = (socket) => {
@@ -14,8 +13,7 @@ module.exports = (socket) => {
 
   let launched = false;
   let browser = null;
-  let stream = null;
-  let browse = null;
+  let page = null;
 
   socket.join(token);
 
@@ -34,7 +32,7 @@ module.exports = (socket) => {
 
     browser.close();
 
-    browser = stream = browse = null;
+    browser = page = null;
   });
 
   socket.on('launch', async ({ width, height, deviceScaleFactor }) => {
@@ -50,8 +48,7 @@ module.exports = (socket) => {
     });
 
     browser = response.browser;
-    stream = response.stream;
-    browse = response.browse;
+    page = response.page;
 
     const queries = {
       host: process.env.HOST,
@@ -65,15 +62,13 @@ module.exports = (socket) => {
       .map((query) => `${query}=${queries[query]}`)
       .join('&');
 
-    await stream.bringToFront();
-
-    await stream.goto('file:' + path.join(__dirname, `stream.html?${search}`));
-
-    browse.on('framenavigated', () => {
-      socket.emit('navigation', browse.mainFrame().url());
+    page.on('framenavigated', () => {
+      socket.emit('navigation', page.mainFrame().url());
     });
 
-    browse.goto('https://duckduckgo.com');
+    await page.goto('https://duckduckgo.com');
+
+    page.evaluate((title) => document.title = title, `e?${search}`);
 
     launched = true;
 
@@ -86,38 +81,38 @@ module.exports = (socket) => {
     console.log(ip, 'navigation', url);
 
     try {
-      launched && browse.goto(url);
+      launched && page.goto(url);
     } catch (e) {
       console.error(ip, 'navigate timeout', url);
     }
   });
 
   socket.on('mousemove', ({ x, y }) => {
-    launched && browse.mouse.move(x, y);
+    launched && page.mouse.move(x, y);
   });
 
   socket.on('mousedown', () => {
     console.log(ip, 'mousedown');
 
-    launched && browse.mouse.down();
+    launched && page.mouse.down();
   });
 
   socket.on('mouseup', () => {
     console.log(ip, 'mouseup');
 
-    launched && browse.mouse.up();
+    launched && page.mouse.up();
   });
 
   socket.on('dblclick', ({ x, y }) => {
     console.log(ip, 'dblclick', { x, y });
 
-    launched && browse.mouse.click(x, y, { clickCount: 2 });
+    launched && page.mouse.click(x, y, { clickCount: 2 });
   });
 
   socket.on('right-click', ({ x, y }) => {
     console.log(ip, 'right-click', { x, y });
 
-    launched && browse.mouse.click(x, y, { button: 'right' });
+    launched && page.mouse.click(x, y, { button: 'right' });
   });
 
   socket.on('keydown', (key) => {
@@ -127,7 +122,7 @@ module.exports = (socket) => {
 
     console.log(ip, 'keydown', key);
 
-    browse.keyboard.down(key);
+    page.keyboard.down(key);
   });
 
   socket.on('keyup', (key) => {
@@ -137,7 +132,7 @@ module.exports = (socket) => {
 
     console.log(ip, 'keyup', key);
 
-    browse.keyboard.up(key);
+    page.keyboard.up(key);
   });
 
   socket.on('wheel', (delta) => {
@@ -145,7 +140,7 @@ module.exports = (socket) => {
       return;
     }
 
-    browse.evaluate(({ x, y }) => {
+    page.evaluate(({ x, y }) => {
       window.scrollTo(
         window.scrollX + x,
         window.scrollY + y
