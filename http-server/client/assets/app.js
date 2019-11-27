@@ -1,6 +1,7 @@
 const welcome = document.querySelector('div.welcome');
 const browsing = document.querySelector('div.browsing');
 const stream = document.querySelector('div.stream');
+const speed = document.querySelector('span.speed');
 const url = document.querySelector('input[name="url"]');
 const video = document.querySelector('video');
 
@@ -12,7 +13,10 @@ const video = document.querySelector('video');
   } else {
     welcome.addEventListener('click', () => {
       welcome.remove();
-      video.play();
+
+      if (video.paused) {
+        video.play();
+      }
     });
 
     const turn = await (await fetch('/credentials.json')).json();
@@ -40,6 +44,24 @@ const video = document.querySelector('video');
       return token;
     })();
 
+    let bytes = 0;
+
+    const connectionSpeed = async () => {
+      const stats = await window.rtc.getStats();
+
+      let sum = 0;
+
+      stats.forEach((report) => {
+        if (report.type === 'inbound-rtp') {
+          sum += report.bytesReceived;
+        }
+      });
+
+      speed.textContent = ((sum - bytes) / 1024).toFixed(0);
+
+      bytes = sum;
+    };
+
     const socket = io({
       query: { token }
     });
@@ -60,6 +82,8 @@ const video = document.querySelector('video');
       socket.on('navigation', (data) => url.value = data);
 
       bindEvents(socket);
+
+      setInterval(connectionSpeed, 1000);
     });
 
     window.rtc = new RTCPeerConnection({
@@ -73,6 +97,10 @@ const video = document.querySelector('video');
     window.rtc.onicecandidate = (e) => {
       if (e.candidate) {
         socket.emit('candidate', e.candidate);
+
+        if (video.paused) {
+          video.play();
+        }
       }
     };
 
