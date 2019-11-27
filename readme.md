@@ -8,7 +8,6 @@ This project is still under developing, open issue if you encounter any bug.
 
 Following is known bug:
 
-- Sound is not support now.
 - Can not type non ASCII character, like Chinese or Japanese.
 - Can not navigate to previous or next page.
 
