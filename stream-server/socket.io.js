@@ -1,1 +1,0 @@
-../http-server/client/assets/socket.io.js
