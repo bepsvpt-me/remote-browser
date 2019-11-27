@@ -8,25 +8,28 @@ const bindEvents = (socket) => {
     };
   };
 
+  const input = document.querySelector('input[name="url"]');
+  const stream = document.querySelector('div.stream');
+
   // mouse event
 
-  document.addEventListener('mousemove', (e) => {
+  stream.addEventListener('mousemove', (e) => {
     socket.emit('mousemove', coordinate(e));
   });
 
-  document.addEventListener('mousedown', () => {
+  stream.addEventListener('mousedown', () => {
     socket.emit('mousedown');
   });
 
-  document.addEventListener('mouseup', () => {
+  stream.addEventListener('mouseup', () => {
     socket.emit('mouseup');
   });
 
-  document.addEventListener('dblclick', (e) => {
+  stream.addEventListener('dblclick', (e) => {
     socket.emit('dblclick', coordinate(e));
   });
 
-  document.addEventListener('contextmenu', (e) => {
+  stream.addEventListener('contextmenu', (e) => {
     e.preventDefault();
 
     socket.emit('right-click', coordinate(e));
@@ -35,7 +38,9 @@ const bindEvents = (socket) => {
   // keyboard event
 
   document.addEventListener('keydown', (e) => {
-    if (['Backspace'].includes(e.key)) {
+    if (e.target === input) {
+      return;
+    } else if (['Backspace'].includes(e.key)) {
       e.preventDefault();
     }
 
