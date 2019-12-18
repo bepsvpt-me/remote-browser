@@ -32,8 +32,6 @@ module.exports = async ({ width, height, token, scale }) => {
 
   const client = await page.target().createCDPSession();
 
-  page.setDefaultNavigationTimeout(10 * 1000);
-
   client.send('Page.setDownloadBehavior', { behavior: 'deny' });
 
   browser.on('targetcreated', async (target) => {
