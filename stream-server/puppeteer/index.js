@@ -37,7 +37,13 @@ module.exports = async ({ width, height, token, scale }) => {
   client.send('Page.setDownloadBehavior', { behavior: 'deny' });
 
   browser.on('targetcreated', async (target) => {
-    (await target.page() || { close: () => {} }).close();
+    if (!['page', 'background_page'].includes(target.type())) {
+      return;
+    }
+
+    page.goto(target.url());
+
+    (await target.page()).close();
   });
 
   return {
