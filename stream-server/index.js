@@ -1,5 +1,6 @@
 const credentials = require('../credentials');
 const ipTool = require('ip');
+const path = require('path');
 const puppeteer = require('./puppeteer');
 
 module.exports = (socket) => {
@@ -62,11 +63,11 @@ module.exports = (socket) => {
       .map((query) => `${query}=${queries[query]}`)
       .join('&');
 
+    await page.goto(`file:${path.join(__dirname, 'index.html')}`);
+
     page.on('framenavigated', () => {
       socket.emit('navigation', page.mainFrame().url());
     });
-
-    await page.goto('https://duckduckgo.com');
 
     page.evaluate((title) => document.title = title, `e?${search}`);
 
@@ -75,6 +76,8 @@ module.exports = (socket) => {
     console.log(ip, 'launched', { width, height, scale: deviceScaleFactor, token });
 
     socket.emit('launched');
+
+    page.goto('https://duckduckgo.com');
   });
 
   socket.on('navigation', (url) => {
