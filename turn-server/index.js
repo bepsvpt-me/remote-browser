@@ -1,25 +1,18 @@
-const credentials = require('../credentials');
-const os = require('os');
-const turn = require('node-turn');
+const crypto = require('crypto');
 
-const interfaces = Object.values(os.networkInterfaces())
-  .flat()
-  .filter((i) => !i.internal && i.family === 'IPv4')
-  .map((i) => i.address);
+const turn = {};
 
-const config = {
-  authMech: 'long-term',
-  credentials: {},
-  debugLevel: 'WARN',
-  listeningIps: interfaces,
-  listeningPort: 3478,
-  maxPort: 65535,
-  minPort: 49152,
-  realm: process.env.HOST,
-  maxAllocateLifetime: 3600,
-  defaultAllocatetLifetime: 600,
-};
+if (process.env.TURN_SERVER && process.env.TURN_SECRET) {
+  const lifetime = Math.trunc(+new Date / 1000) + 12 * 60 * 60; // 12 hours
+  const unique = crypto.randomBytes(8).toString('hex');
 
-config.credentials[credentials.username] = credentials.password;
+  turn.turnServer = process.env.TURN_SERVER;
 
-module.exports = new turn(config);
+  turn.turnUsername = `${lifetime}:${unique}`;
+
+  turn.turnPassword = crypto.createHmac('sha1', process.env.TURN_SECRET)
+    .update(turn.turnUsername)
+    .digest('base64');
+}
+
+module.exports = turn;

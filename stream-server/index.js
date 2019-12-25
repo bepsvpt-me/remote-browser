@@ -1,7 +1,7 @@
-const credentials = require('../credentials');
 const ipTool = require('ip');
 const path = require('path');
 const puppeteer = require('./puppeteer');
+const turn = require('../turn-server');
 
 module.exports = (socket) => {
   const ip = socket.handshake.address;
@@ -56,7 +56,7 @@ module.exports = (socket) => {
       port: process.env.PORT,
       secure: process.env.SECURE === 'true' ? 1 : 0,
       token,
-      ...credentials,
+      ...turn,
     };
 
     const search = Object.keys(queries)
@@ -77,7 +77,9 @@ module.exports = (socket) => {
 
     socket.emit('launched');
 
-    page.goto('https://duckduckgo.com');
+    setTimeout(() => {
+      page.goto('https://duckduckgo.com');
+    }, 500);
   });
 
   socket.on('navigation', (url) => {

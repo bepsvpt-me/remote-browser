@@ -86,12 +86,12 @@ const video = document.querySelector('video');
       setInterval(connectionSpeed, 1000);
     });
 
-    window.rtc = new RTCPeerConnection({
+    window.rtc = new RTCPeerConnection(!turn.turnServer ? {} : {
       iceServers: [{
-        urls: `turn:${turn.host}:3478`,
-        username: turn.username,
-        credential: turn.password,
-      }],
+        urls: turn.turnServer,
+        username: turn.turnUsername,
+        credential: turn.turnPassword,
+      }]
     });
 
     window.rtc.onicecandidate = (e) => {

@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-const credentials = require('../../credentials');
+const turn = require('../../turn-server');
 
 app.use(
   '/assets',
@@ -13,10 +13,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/credentials.json', (req, res) => {
-  res.json({
-    host: process.env.HOST,
-    ...credentials,
-  });
+  res.json(turn);
 });
 
 app.get('*', (req, res) => {

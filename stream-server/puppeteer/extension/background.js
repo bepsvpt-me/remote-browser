@@ -33,11 +33,11 @@ chrome.tabs.onUpdated.addListener((id, info, tab) => {
     },
   });
 
-  const rtc = window.rtc = new RTCPeerConnection({
+  const rtc = window.rtc = new RTCPeerConnection(!query.get('turnServer') ? {} : {
     iceServers: [{
-      urls: `turn:${query.get('host')}:3478`,
-      username: query.get('username'),
-      credential: query.get('password'),
+      urls: query.get('turnServer'),
+      username: query.get('turnUsername'),
+      credential: query.get('turnPassword'),
     }],
   });
 
