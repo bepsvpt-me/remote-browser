@@ -13,8 +13,8 @@ Following is known bug:
 
 ## Installation
 
-1. clone this repo `git clone https://github.com/bepsvpt/remote-browser.git`
-2. run `chrome-dependencies-installer.sh` as root to install chrome dependencies(only test in Ubuntu 19.10)
+1. clone this repo `git clone https://github.com/bepsvpt-me/remote-browser.git`
+2. run `chrome-dependencies-installer.sh` as root to install chrome dependencies(only test on Ubuntu 19.10)
 3. run `yarn install` to install node dependencies
 4. copy `.env.example` to `.env` and setup environment variables
 
