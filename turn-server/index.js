@@ -1,18 +1,19 @@
 const crypto = require('crypto');
 
-const turn = {};
+if (!(process.env.TURN_SERVER && process.env.TURN_SECRET)) {
+  module.exports = () => ({});
+} else {
+  module.exports = () => {
+    const lifetime = Math.trunc(+new Date / 1000) + 6 * 60 * 60; // 6 hours
+    const unique = crypto.randomBytes(8).toString('hex');
+    const username = `${lifetime}:${unique}`;
 
-if (process.env.TURN_SERVER && process.env.TURN_SECRET) {
-  const lifetime = Math.trunc(+new Date / 1000) + 12 * 60 * 60; // 12 hours
-  const unique = crypto.randomBytes(8).toString('hex');
-
-  turn.turnServer = process.env.TURN_SERVER;
-
-  turn.turnUsername = `${lifetime}:${unique}`;
-
-  turn.turnPassword = crypto.createHmac('sha1', process.env.TURN_SECRET)
-    .update(turn.turnUsername)
-    .digest('base64');
+    return {
+      turnServer: process.env.TURN_SERVER,
+      turnUsername: username,
+      turnPassword: crypto.createHmac('sha1', process.env.TURN_SECRET)
+        .update(username)
+        .digest('base64')
+    };
+  };
 }
-
-module.exports = turn;

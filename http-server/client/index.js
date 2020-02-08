@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/credentials.json', (req, res) => {
-  res.json(turn);
+  res.json(turn());
 });
 
 app.get('*', (req, res) => {

@@ -56,7 +56,7 @@ module.exports = (socket) => {
       port: process.env.PORT,
       secure: process.env.SECURE === 'true' ? 1 : 0,
       token,
-      ...turn,
+      ...turn(),
     };
 
     const search = Object.keys(queries)
