@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "AGPL-3.0-only",
   "scripts": {
-    "start": "node index.js"
+    "serve": "node index.js"
   },
   "dependencies": {
     "console-stamp": "^0.2.9",
