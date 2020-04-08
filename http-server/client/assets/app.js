@@ -19,7 +19,7 @@ const video = document.querySelector('video');
       }
     });
 
-    const turn = await (await fetch('/credentials.json')).json();
+    const iceServers = await (await fetch('/credentials.json')).json();
 
     const token = (() => {
       try {
@@ -63,7 +63,8 @@ const video = document.querySelector('video');
     };
 
     const socket = io({
-      query: { token }
+      query: { token, type: 'client' },
+      transports: ['websocket']
     });
 
     socket.emit('launch', {
@@ -73,6 +74,8 @@ const video = document.querySelector('video');
     });
 
     socket.on('launched', () => {
+      socket.emit('launched');
+
       url.addEventListener('change', () => {
         url.blur();
 
@@ -86,13 +89,7 @@ const video = document.querySelector('video');
       setInterval(connectionSpeed, 1000);
     });
 
-    window.rtc = new RTCPeerConnection(!turn.turnServer ? {} : {
-      iceServers: [{
-        urls: turn.turnServer,
-        username: turn.turnUsername,
-        credential: turn.turnPassword,
-      }]
-    });
+    window.rtc = new RTCPeerConnection({ iceServers });
 
     window.rtc.onicecandidate = (e) => {
       if (e.candidate) {

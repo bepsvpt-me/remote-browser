@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-const turn = require('../../turn-server');
+const ice = require('../../ice-servers');
 
 app.use(
   '/assets',
@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/credentials.json', (req, res) => {
-  res.json(turn());
+  res.json(ice());
 });
 
 app.get('*', (req, res) => {
