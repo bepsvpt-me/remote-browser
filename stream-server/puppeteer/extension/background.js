@@ -1,71 +1,84 @@
-let init = false;
+const getTab = (id) => {
+  return new Promise((resolve) => {
+    setTimeout(() => chrome.tabs.get(id, resolve), 20);
+  });
+};
 
-chrome.tabs.onUpdated.addListener((id, info, tab) => {
-  const title = info.title;
+const getInfo = {
+  populate: true
+};
 
-  if (init || !title || !title.startsWith('e?')) {
-    return;
-  }
-
-  init = true;
-
-  const query = new URLSearchParams(title.substring(1));
-
-  const options = {
+const captureOptions = ({ width, height }) => {
+  return {
     audio: true,
     video: true,
     videoConstraints: {
       mandatory: {
-        maxWidth: tab.width,
-        minWidth: tab.width,
-        maxHeight: tab.height,
-        minHeight: tab.height,
-        maxFrameRate: 60,
-        minFrameRate: 30,
+        maxWidth: width * 4,
+        minWidth: width * 4,
+        maxHeight: height * 4,
+        minHeight: height * 4,
+        maxFrameRate: 120,
+        minFrameRate: 60,
       },
     },
-  };
+  }
+};
 
-  const socket = io(`http${parseInt(query.get('secure'), 10) ? 's' : ''}://${query.get('host')}:${query.get('port')}`, {
+chrome.windows.getCurrent(getInfo, async ({ tabs }) => {
+  let tab = tabs[0];
+
+  while (tab.status !== 'complete') {
+    tab = await await getTab(tab.id);
+  }
+
+  const config = JSON.parses(tab.title);
+
+  window.socket = io(config.socket, {
+    transports: ['websocket'],
     query: {
-      token: query.get('token'),
+      token: config.token,
       type: 'server',
     },
   });
 
-  const rtc = window.rtc = new RTCPeerConnection(!query.get('turnServer') ? {} : {
-    iceServers: [{
-      urls: query.get('turnServer'),
-      username: query.get('turnUsername'),
-      credential: query.get('turnPassword'),
-    }],
+  window.rtc = new RTCPeerConnection({
+    iceServers: config.ice
   });
 
-  chrome.tabCapture.capture(options, (stream) => {
-    rtc.onicecandidate = (e) => {
-      e.candidate && socket.emit('candidate', e.candidate);
+  chrome.tabCapture.capture(captureOptions(tab), (stream) => {
+    window.stream = stream;
+
+    window.socket.emit('launched');
+
+    window.rtc.onicecandidate = (e) => {
+      if (e.candidate) {
+        window.socket.emit('candidate', e.candidate);
+      }
     };
 
-    rtc.onnegotiationneeded = async () => {
-      const offer = await rtc.createOffer();
+    window.rtc.onnegotiationneeded = async () => {
+      const offer = await window.rtc.createOffer();
 
-      // offer.sdp = `${offer.sdp}b=AS:9999999\r\n`;
+      await window.rtc.setLocalDescription(offer);
 
-      await rtc.setLocalDescription(offer);
-
-      socket.emit('offer', rtc.localDescription);
+      window.socket.emit('offer', window.rtc.localDescription);
     };
 
-    socket.on('candidate', (data) => {
-      rtc.addIceCandidate(new RTCIceCandidate(data));
+    window.socket.on('candidate', (data) => {
+      window.rtc.addIceCandidate(
+        new RTCIceCandidate(data)
+      );
     });
 
-    socket.on('answer', (data) => {
-      rtc.setRemoteDescription(new RTCSessionDescription(data));
+    window.socket.on('answer', (data) => {
+      window.rtc.setRemoteDescription(
+        new RTCSessionDescription(data)
+      );
     });
 
     stream.getTracks().forEach((track) => {
-      rtc.addTrack(track, stream);
+      window.rtc.addTrack(track, stream);
     });
   });
 });
