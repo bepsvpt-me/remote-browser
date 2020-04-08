@@ -4,7 +4,7 @@ Using WebRTC to connect to puppeteer which running on remote server.
 
 ## Notice
 
-This project is still under developing, open issue if you encounter any bug. 
+This project is still under developing, open issue if you encounter any bug.
 
 Following is known bug:
 
@@ -23,7 +23,7 @@ Following is known bug:
 Run following command to start server:
 
 ```shell
-xvfb-run -a --server-args="-screen 0 3840x2160x24 -ac -nolisten tcp +extension RANDR" yarn start
+xvfb-run -a --server-args="-screen 0 3840x2160x24 -ac -nolisten tcp +extension RANDR" yarn serve
 ```
 
 ## Resources
