@@ -9,6 +9,11 @@ html, body {
   position: relative;
 }
 
+video {
+  height: 100%;
+  object-fit: cover;
+}
+
 hr {
   border-left: none;
   border-right: none;
