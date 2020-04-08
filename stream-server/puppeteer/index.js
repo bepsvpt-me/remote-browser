@@ -1,24 +1,43 @@
 const isRoot = require('is-root');
+const path = require('path');
+const pick = require('lodash/pick');
 const puppeteer = require('puppeteer');
-const extension = require('path').join(__dirname, 'extension');
+const extension = path.join(__dirname, 'extension');
+const extensionId = 'aahdpjnamionemlcfkodembopehdcipg';
+const eventBlacklist = ['page', 'background_page'];
 
-module.exports = async ({ width, height, token, scale }) => {
+const cdp = async (page) => {
+  const client = await page.target().createCDPSession();
+
+  client.send('Page.setDownloadBehavior', {
+    behavior: 'deny'
+  });
+};
+
+module.exports = async (options) => {
   const browser = await puppeteer.launch({
     args: [
       '--block-new-web-contents',
       `--disable-extensions-except=${extension}`,
-      '--disable-gpu',
       '--kiosk',
       `--load-extension=${extension}`,
+      '--no-crash-upload',
       '--no-default-browser-check',
+      '--no-first-run',
+      '--no-managed-user-acknowledgment-check',
       '--no-recovery-component',
       isRoot() ? '--no-sandbox' : '',
+      '--noerrdialogs',
       '--suppress-message-center-popups',
-      `--user-data-dir=chrome-user-data/${token}`,
-      `--window-size=${width * 2},${height * 2}`,
-      '--whitelisted-extension-id=aahdpjnamionemlcfkodembopehdcipg'
+      `--user-data-dir=chrome-user-data/${options.token}`,
+      `--window-size=${options.width},${options.height}`,
+      `--whitelisted-extension-id=${extensionId}`,
     ],
-    defaultViewport: { width, height, deviceScaleFactor: scale },
+    defaultViewport: pick(options, [
+      'width',
+      'height',
+      'deviceScaleFactor',
+    ]),
     // devtools: true,
     headless: false,
     ignoreDefaultArgs: [
@@ -30,12 +49,10 @@ module.exports = async ({ width, height, token, scale }) => {
 
   const page = (await browser.pages())[0];
 
-  const client = await page.target().createCDPSession();
-
-  client.send('Page.setDownloadBehavior', { behavior: 'deny' });
+  cdp(page);
 
   browser.on('targetcreated', async (target) => {
-    if (!['page', 'background_page'].includes(target.type())) {
+    if (!eventBlacklist.includes(target.type())) {
       return;
     }
 
@@ -44,8 +61,5 @@ module.exports = async ({ width, height, token, scale }) => {
     (await target.page()).close();
   });
 
-  return {
-    browser,
-    page,
-  };
+  return { browser, page };
 };
