@@ -1,14 +1,16 @@
+const ice = require('../ice-servers');
 const ipTool = require('ip');
-const path = require('path');
 const puppeteer = require('./puppeteer');
-const turn = require('../turn-server');
+const typeWhitelist = ['server', 'client'];
+const handshakes = ['offer', 'answer', 'candidate'];
 
 module.exports = (socket) => {
+  const { token, type } = socket.handshake.query;
   const ip = socket.handshake.address;
-  const token = socket.handshake.query.token;
-  const type = ipTool.isPrivate(ip) ? socket.handshake.query.type : 'client';
 
-  if (!token) {
+  if (!token || !type || !typeWhitelist.includes(type)) {
+    return socket.disconnect(true);
+  } else if (!ipTool.isPrivate(ip) && type === 'server') {
     return socket.disconnect(true);
   }
 
@@ -36,50 +38,39 @@ module.exports = (socket) => {
     browser = page = null;
   });
 
-  socket.on('launch', async ({ width, height, deviceScaleFactor }) => {
+  socket.on('launch', async (options) => {
     if (browser) {
       return socket.emit('running');
     }
 
-    const response = await puppeteer({
-      width,
-      height,
-      scale: deviceScaleFactor,
+    const config = JSON.stringify({
+      ice: ice(),
+      socket: `http://${process.env.HOST}:${process.env.PORT}`,
       token,
     });
+
+    const response = await puppeteer({ token, ...options });
+
+    launched = true;
 
     browser = response.browser;
     page = response.page;
 
-    const queries = {
-      host: process.env.HOST,
-      port: process.env.PORT,
-      secure: process.env.SECURE === 'true' ? 1 : 0,
-      token,
-      ...turn(),
-    };
+    page.evaluate(title => document.title = title, config)
 
-    const search = Object.keys(queries)
-      .map((query) => `${query}=${queries[query]}`)
-      .join('&');
+    console.log(ip, 'launched', { token, ...options });
+  });
 
-    await page.goto(`file:${path.join(__dirname, 'index.html')}`);
+  socket.on('launched', async () => {
+    if (type === 'server') {
+      return socket.to(token).emit('launched');
+    }
 
     page.on('framenavigated', () => {
       socket.emit('navigation', page.mainFrame().url());
     });
 
-    page.evaluate((title) => document.title = title, `e?${search}`);
-
-    launched = true;
-
-    console.log(ip, 'launched', { width, height, scale: deviceScaleFactor, token });
-
-    socket.emit('launched');
-
-    setTimeout(() => {
-      page.goto('https://duckduckgo.com');
-    }, 500);
+    page.goto('https://duckduckgo.com');
   });
 
   socket.on('navigation', (url) => {
@@ -140,6 +131,7 @@ module.exports = (socket) => {
     page.keyboard.up(key);
   });
 
+  // fix element scroll
   socket.on('wheel', (delta) => {
     if (!launched) {
       return;
@@ -153,7 +145,7 @@ module.exports = (socket) => {
     }, delta);
   });
 
-  ['offer', 'answer', 'candidate'].forEach((handshake) => {
+  handshakes.forEach((handshake) => {
     socket.on(handshake, (data) => {
       console.log(ip, handshake);
 
