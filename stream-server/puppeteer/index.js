@@ -34,7 +34,7 @@ module.exports = async (options) => {
       '--noerrdialogs',
       '--suppress-message-center-popups',
       `--user-data-dir=chrome-user-data/${options.token}`,
-      `--window-size=${width},${height}`,
+      `--window-size=${width},${height + 90}`,
       `--whitelisted-extension-id=${extensionId}`,
     ],
     defaultViewport: { width, height },
