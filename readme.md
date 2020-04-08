@@ -10,6 +10,7 @@ Following is known bug:
 
 - Can not type non ASCII character, like Chinese or Japanese.
 - Can not navigate to previous or next page.
+- Can not scroll inside page element.
 
 ## Installation
 
@@ -25,6 +26,30 @@ Run following command to start server:
 ```shell
 xvfb-run -a --server-args="-screen 0 3840x2160x24 -ac -nolisten tcp +extension RANDR" yarn serve
 ```
+
+## Daemon
+
+We have provide pm2 ecosystem config file, just follow commands below.
+
+**start pm2 instance**
+
+```shell
+./node_modules/.bin/pm2 start ecosystem.config.js
+```
+
+**save process list**
+
+```shell
+./node_modules/.bin/pm2 save
+```
+
+**setup startup script**
+
+```shell
+./node_modules/.bin/pm2 startup
+```
+
+You can find more information from [pm2 document](https://pm2.keymetrics.io/docs/usage/startup/).
 
 ## Resources
 
