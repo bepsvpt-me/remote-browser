@@ -15,7 +15,7 @@ const cdp = async (page) => {
 };
 
 module.exports = async (options) => {
-  const width = 800;
+  const width = 1280;
 
   const height = Math.trunc(width / options.ratio);
 
