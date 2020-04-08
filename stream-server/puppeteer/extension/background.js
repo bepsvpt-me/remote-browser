@@ -32,7 +32,7 @@ chrome.windows.getCurrent(getInfo, async ({ tabs }) => {
     tab = await await getTab(tab.id);
   }
 
-  const config = JSON.parses(tab.title);
+  const config = JSON.parse(tab.title);
 
   window.socket = io(config.socket, {
     transports: ['websocket'],
