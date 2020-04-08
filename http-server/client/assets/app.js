@@ -68,9 +68,7 @@ const video = document.querySelector('video');
     });
 
     socket.emit('launch', {
-      height: stream.clientHeight,
-      width: stream.clientWidth,
-      deviceScaleFactor: window.devicePixelRatio,
+      ratio: stream.clientWidth / stream.clientHeight
     });
 
     socket.on('launched', () => {

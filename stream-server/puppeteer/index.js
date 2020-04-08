@@ -15,6 +15,10 @@ const cdp = async (page) => {
 };
 
 module.exports = async (options) => {
+  const width = 800;
+
+  const height = Math.trunc(width / options.ratio);
+
   const browser = await puppeteer.launch({
     args: [
       '--block-new-web-contents',
@@ -30,14 +34,10 @@ module.exports = async (options) => {
       '--noerrdialogs',
       '--suppress-message-center-popups',
       `--user-data-dir=chrome-user-data/${options.token}`,
-      `--window-size=${options.width},${options.height}`,
+      `--window-size=${width},${height}`,
       `--whitelisted-extension-id=${extensionId}`,
     ],
-    defaultViewport: pick(options, [
-      'width',
-      'height',
-      'deviceScaleFactor',
-    ]),
+    defaultViewport: { width, height },
     // devtools: true,
     headless: false,
     ignoreDefaultArgs: [
