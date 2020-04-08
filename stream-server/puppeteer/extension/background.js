@@ -28,7 +28,7 @@ const captureOptions = ({ width, height }) => {
 chrome.windows.getCurrent(getInfo, async ({ tabs }) => {
   let tab = tabs[0];
 
-  while (tab.status !== 'complete') {
+  while (!tab.title.startsWith('{')) {
     tab = await await getTab(tab.id);
   }
 
