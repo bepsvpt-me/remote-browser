@@ -42,6 +42,7 @@ module.exports = async (options) => {
       `--whitelisted-extension-id=${extensionId}`,
     ],
     defaultViewport: { width, height },
+    executablePath: process.env.CHROMIUM_EXECUTE_PATH || undefined,
     // devtools: true,
     headless: false,
     ignoreDefaultArgs: [
