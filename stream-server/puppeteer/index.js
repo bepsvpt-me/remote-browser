@@ -22,6 +22,8 @@ module.exports = async (options) => {
   const browser = await puppeteer.launch({
     args: [
       '--block-new-web-contents',
+      '--disable-breakpad',
+      '--disable-dev-shm-usage',
       `--disable-extensions-except=${extension}`,
       '--kiosk',
       `--load-extension=${extension}`,
@@ -31,6 +33,7 @@ module.exports = async (options) => {
       '--no-managed-user-acknowledgment-check',
       '--no-recovery-component',
       isRoot() ? '--no-sandbox' : '',
+      '--no-zygote',
       '--noerrdialogs',
       '--suppress-message-center-popups',
       `--user-data-dir=chrome-user-data/${options.token}`,
