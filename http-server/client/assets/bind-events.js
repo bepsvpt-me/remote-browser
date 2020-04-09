@@ -1,10 +1,11 @@
 const offsetY = 38;
+const ratio = 1280 / document.querySelector('div.stream').clientWidth;
 
 const bindEvents = (socket) => {
   const coordinate = (e) => {
     return {
-      x: e.clientX,
-      y: e.clientY - offsetY,
+      x: Math.trunc(e.clientX * ratio),
+      y: Math.trunc((e.clientY - offsetY) * ratio),
     };
   };
 
