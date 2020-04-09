@@ -36,6 +36,7 @@ module.exports = async (options) => {
       '--no-zygote',
       '--noerrdialogs',
       '--suppress-message-center-popups',
+      `--use-gl=${process.env.GPU_GL}`,
       `--user-data-dir=chrome-user-data/${options.token}`,
       `--window-size=${width},${height + 90}`,
       `--whitelisted-extension-id=${extensionId}`,
