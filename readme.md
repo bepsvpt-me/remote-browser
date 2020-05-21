@@ -11,6 +11,7 @@ Following is known bug:
 - Can not type non ASCII character, like Chinese or Japanese.
 - Can not navigate to previous or next page.
 - Can not scroll inside page element.
+- Bad performance.
 
 ## Installation
 
