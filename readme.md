@@ -13,6 +13,10 @@ Following is known bug:
 - Can not scroll inside page element.
 - Bad performance.
 
+## Screenshot
+
+![duckduckgo](screenshots/duckduckgo.png)
+
 ## Installation
 
 1. clone this repo `git clone https://github.com/bepsvpt-me/remote-browser.git`
