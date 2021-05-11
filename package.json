@@ -13,7 +13,7 @@
     "express-basic-auth": "^1.2.0",
     "ip": "^1.1.5",
     "is-root": "^2.1.0",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "pm2": "^4.4.0",
     "puppeteer": "^5.2.0",
     "socket.io": "^2.3.0"
