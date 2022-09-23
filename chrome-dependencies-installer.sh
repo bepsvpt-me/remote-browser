@@ -4,6 +4,7 @@ set -e
 apt install xvfb \
 libxcomposite1 \
 libxcursor1 \
+libgbm1 \
 libxss1 \
 libxrandr2 \
 libatk1.0-0 \
