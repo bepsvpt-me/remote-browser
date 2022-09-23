@@ -5,7 +5,7 @@ const speed = document.querySelector('span.speed')
 const url = document.querySelector('input[name="url"]')
 const video = document.querySelector('video')
 
-(async () => {
+;(async () => {
   if (!('RTCPeerConnection' in window)) {
     welcome.textContent = 'This page requires WebRTC!'
 
