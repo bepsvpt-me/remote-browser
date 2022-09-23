@@ -1,23 +1,27 @@
-const isRoot = require('is-root');
-const path = require('path');
-const pick = require('lodash/pick');
-const puppeteer = require('puppeteer');
-const extension = path.join(__dirname, 'extension');
-const extensionId = 'aahdpjnamionemlcfkodembopehdcipg';
-const eventBlacklist = ['page', 'background_page'];
+import isRoot from 'is-root'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import puppeteer from 'puppeteer'
+
+const extension = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  'extension',
+)
+const extensionId = 'aahdpjnamionemlcfkodembopehdcipg'
+const eventBlacklist = ['page', 'background_page']
 
 const cdp = async (page) => {
-  const client = await page.target().createCDPSession();
+  const client = await page.target().createCDPSession()
 
   client.send('Page.setDownloadBehavior', {
     behavior: 'deny'
-  });
-};
+  })
+}
 
-module.exports = async (options) => {
-  const width = 1280;
+export default async (options) => {
+  const width = 1280
 
-  const height = Math.trunc(width / options.ratio);
+  const height = Math.trunc(width / options.ratio)
 
   const browser = await puppeteer.launch({
     args: [
@@ -50,21 +54,27 @@ module.exports = async (options) => {
       '--enable-automation',
       '--mute-audio',
     ]
-  });
+  })
 
-  const page = (await browser.pages())[0];
+  const page = (await browser.pages())[0]
 
-  cdp(page);
+  await page.setViewport({
+    width: width,
+    height: height,
+    deviceScaleFactor: 2,
+  })
+
+  cdp(page)
 
   browser.on('targetcreated', async (target) => {
     if (!eventBlacklist.includes(target.type())) {
-      return;
+      return
     }
 
-    page.goto(target.url());
+    page.goto(target.url())
 
-    (await target.page()).close();
-  });
+    (await target.page()).close()
+  })
 
-  return { browser, page };
-};
+  return { browser, page }
+}

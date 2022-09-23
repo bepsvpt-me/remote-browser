@@ -1,30 +1,30 @@
-const welcome = document.querySelector('div.welcome');
-const browsing = document.querySelector('div.browsing');
-const stream = document.querySelector('div.stream');
-const speed = document.querySelector('span.speed');
-const url = document.querySelector('input[name="url"]');
-const video = document.querySelector('video');
+const welcome = document.querySelector('div.welcome')
+const browsing = document.querySelector('div.browsing')
+const stream = document.querySelector('div.stream')
+const speed = document.querySelector('span.speed')
+const url = document.querySelector('input[name="url"]')
+const video = document.querySelector('video')
 
 (async () => {
   if (!('RTCPeerConnection' in window)) {
-    welcome.textContent = 'This page requires WebRTC!';
+    welcome.textContent = 'This page requires WebRTC!'
 
-    browsing.remove();
+    browsing.remove()
   } else {
     welcome.addEventListener('click', () => {
-      welcome.remove();
+      welcome.remove()
 
       if (video.paused) {
-        video.play();
+        video.play()
       }
-    });
+    })
 
-    const iceServers = await (await fetch('/credentials.json')).json();
+    const iceServers = await (await fetch('/credentials.json')).json()
 
     const token = (() => {
       try {
         if (localStorage.getItem('token')) {
-          return localStorage.getItem('token');
+          return localStorage.getItem('token')
         }
       } catch (e) {
         //
@@ -33,86 +33,86 @@ const video = document.querySelector('video');
       // uuid v4, source: https://stackoverflow.com/a/2117523
       const token = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-      );
+      )
 
       try {
-        localStorage.setItem('token', token);
+        localStorage.setItem('token', token)
       } catch (e) {
         //
       }
 
-      return token;
-    })();
+      return token
+    })()
 
-    let bytes = 0;
+    let bytes = 0
 
     const connectionSpeed = async () => {
-      const stats = await window.rtc.getStats();
+      const stats = await window.rtc.getStats()
 
-      let sum = 0;
+      let sum = 0
 
       stats.forEach((report) => {
         if (report.type === 'inbound-rtp') {
-          sum += report.bytesReceived;
+          sum += report.bytesReceived
         }
-      });
+      })
 
-      speed.textContent = ((sum - bytes) / 1024).toFixed(0);
+      speed.textContent = ((sum - bytes) / 1024).toFixed(0)
 
-      bytes = sum;
-    };
+      bytes = sum
+    }
 
     const socket = io({
       query: { token, type: 'client' },
       transports: ['websocket']
-    });
+    })
 
     socket.emit('launch', {
       ratio: stream.clientWidth / stream.clientHeight
-    });
+    })
 
     socket.on('launched', () => {
-      socket.emit('launched');
+      socket.emit('launched')
 
       url.addEventListener('change', () => {
-        url.blur();
+        url.blur()
 
-        socket.emit('navigation', url.value);
-      });
+        socket.emit('navigation', url.value)
+      })
 
-      socket.on('navigation', (data) => url.value = data);
+      socket.on('navigation', (data) => url.value = data)
 
-      bindEvents(socket);
+      bindEvents(socket)
 
-      setInterval(connectionSpeed, 1000);
-    });
+      setInterval(connectionSpeed, 1000)
+    })
 
-    window.rtc = new RTCPeerConnection({ iceServers });
+    window.rtc = new RTCPeerConnection({ iceServers })
 
     window.rtc.onicecandidate = (e) => {
       if (e.candidate) {
-        socket.emit('candidate', e.candidate);
+        socket.emit('candidate', e.candidate)
 
         if (video.paused) {
-          video.play();
+          video.play()
         }
       }
-    };
+    }
 
     window.rtc.ontrack = (e) => {
-      document.querySelector('video').srcObject = e.streams[0];
-    };
+      document.querySelector('video').srcObject = e.streams[0]
+    }
 
     socket.on('offer', async (data) => {
-      await window.rtc.setRemoteDescription(new RTCSessionDescription(data));
+      await window.rtc.setRemoteDescription(new RTCSessionDescription(data))
 
-      await window.rtc.setLocalDescription(await window.rtc.createAnswer());
+      await window.rtc.setLocalDescription(await window.rtc.createAnswer())
 
-      socket.emit('answer', window.rtc.localDescription);
-    });
+      socket.emit('answer', window.rtc.localDescription)
+    })
 
     socket.on('candidate', (data) => {
-      window.rtc.addIceCandidate(new RTCIceCandidate(data));
-    });
+      window.rtc.addIceCandidate(new RTCIceCandidate(data))
+    })
   }
-})();
+})()

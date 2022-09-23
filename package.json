@@ -1,21 +1,23 @@
 {
   "name": "@bepsvpt/remote-browser",
   "version": "1.0.0",
-  "main": "index.js",
+  "exports": "./index.js",
   "license": "AGPL-3.0-only",
+  "type": "module",
   "scripts": {
-    "serve": "node index.js"
+    "serve": "node --require dotenv/config index.js"
   },
   "dependencies": {
-    "console-stamp": "^0.2.9",
-    "dotenv": "^8.2.0",
+    "console-stamp": "^3.0.6",
+    "dotenv": "^16.0.2",
     "express": "^4.17.1",
     "express-basic-auth": "^1.2.0",
     "ip": "^1.1.5",
-    "is-root": "^2.1.0",
+    "is-root": "^3.0.0",
     "lodash": "^4.17.19",
-    "pm2": "^4.4.0",
-    "puppeteer": "^5.2.0",
-    "socket.io": "^2.3.0"
-  }
+    "pm2": "^5.2.0",
+    "puppeteer": "^18.0.5",
+    "socket.io": "^4.5.2"
+  },
+  "packageManager": "yarn@1.22.19"
 }

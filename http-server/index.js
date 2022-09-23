@@ -1,3 +1,4 @@
-const app = require('./client');
+import { createServer } from 'http'
+import app from './client/index.js'
 
-module.exports = require('http').createServer(app);
+export default createServer(app)
