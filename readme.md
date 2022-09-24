@@ -37,7 +37,7 @@ We have provide pm2 ecosystem config file, just follow commands below.
 **start pm2 instance**
 
 ```shell
-./node_modules/.bin/pm2 start ecosystem.config.js
+./node_modules/.bin/pm2 start ecosystem.config.cjs
 ```
 
 **save process list**
