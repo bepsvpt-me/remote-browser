@@ -8,9 +8,7 @@ This project is still under developing, open issue if you encounter any bug.
 
 Following is known bug:
 
-- Can not type non ASCII character, like Chinese or Japanese.
-- Can not navigate to previous or next page.
-- Can not scroll inside page element.
+- Do not support file download.
 - Bad performance.
 
 ## Screenshot
@@ -63,6 +61,7 @@ You can find more information from [pm2 document](https://pm2.keymetrics.io/docs
 - Chromium Command Line Switches - https://peter.sh/experiments/chromium-command-line-switches/
 - WebRTC API - https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API
 - SDP RFC - [rfc3264](https://tools.ietf.org/html/rfc3264), [rfc4566](https://tools.ietf.org/html/rfc4566)
+- MediaStreamTrack Content Hints - https://www.w3.org/TR/mst-content-hint/
 
 ## License
 
