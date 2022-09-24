@@ -58,16 +58,43 @@ noscript {
   white-space: nowrap;
 }
 
+.network span {
+  vertical-align: sub;
+}
+
+.go-back, .go-forward {
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  height: 26px;
+  width: 26px;
+  background-color: transparent;
+}
+
+.go-back svg.icon, .go-forward svg.icon {
+  margin: 0;
+}
+
+.go-back:hover, .go-forward:hover {
+  background-color: #eaeaea;
+}
+
+.go-back:active, .go-forward:active {
+  background-color: #d9d7d7;
+}
+
 .icon {
   margin: 0 5px;
   width: 20px;
   height: 20px;
+  vertical-align: middle;
 }
 
 .url {
   padding: 4px;
   border-radius: 3px;
   font-size: 12px;
+  margin-left: 5px;
 }
 
 .stream {

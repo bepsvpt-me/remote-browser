@@ -2,6 +2,8 @@ const welcome = document.querySelector('div.welcome')
 const browsing = document.querySelector('div.browsing')
 const stream = document.querySelector('div.stream')
 const speed = document.querySelector('span.speed')
+const back = document.querySelector('button.go-back')
+const forward = document.querySelector('button.go-forward')
 const url = document.querySelector('input[name="url"]')
 const video = document.querySelector('video')
 const input = document.querySelector('input.input')
@@ -75,6 +77,14 @@ const input = document.querySelector('input.input')
     socket.on('launched', () => {
       socket.emit('launched')
 
+      back.addEventListener('click', () => {
+        socket.emit('go-back')
+      })
+
+      document.querySelector('.go-forward').addEventListener('click', () => {
+        socket.emit('go-forward')
+      })
+
       url.addEventListener('change', () => {
         url.blur()
 
@@ -82,9 +92,11 @@ const input = document.querySelector('input.input')
       })
 
       socket.on('navigation', (data) => {
+        document.title = data.title
+
         url.value = decodeURIComponent(data.url)
 
-        document.title = data.title
+        window.history.replaceState(null, '', `${location.origin}/${data.url}`)
       })
 
       socket.on('focusin', (data) => {

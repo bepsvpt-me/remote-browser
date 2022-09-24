@@ -135,6 +135,22 @@ export default (socket) => {
     }
   })
 
+  socket.on('go-back', () => {
+    if (!launched) {
+      return
+    }
+
+    console.log(ip, 'go-back')
+
+    page.goBack()
+  })
+
+  socket.on('go-forward', () => {
+    console.log(ip, 'go-forward')
+
+    launched && page.goForward()
+  })
+
   socket.on('mousemove', ({ x, y }) => {
     launched && page.mouse.move(x, y)
   })
