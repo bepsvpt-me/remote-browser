@@ -29,7 +29,7 @@ chrome.windows.getCurrent(getInfo, async ({ tabs }) => {
   let tab = tabs[0]
 
   while (!tab.title.startsWith('{')) {
-    tab = await await getTab(tab.id)
+    tab = await getTab(tab.id)
   }
 
   const config = JSON.parse(tab.title)

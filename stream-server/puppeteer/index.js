@@ -29,12 +29,12 @@ export default async (options) => {
       '--disable-breakpad',
       '--disable-dev-shm-usage',
       `--disable-extensions-except=${extension}`,
+      '--hide-crash-restore-bubble',
       '--kiosk',
       `--load-extension=${extension}`,
       '--no-crash-upload',
       '--no-default-browser-check',
       '--no-first-run',
-      '--no-managed-user-acknowledgment-check',
       '--no-recovery-component',
       isRoot() ? '--no-sandbox' : '',
       isRoot() ? '--no-zygote' : '',
@@ -57,12 +57,6 @@ export default async (options) => {
   })
 
   const page = (await browser.pages())[0]
-
-  await page.setViewport({
-    width: width,
-    height: height,
-    deviceScaleFactor: 2,
-  })
 
   cdp(page)
 
