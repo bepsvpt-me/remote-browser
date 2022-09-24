@@ -84,7 +84,6 @@ noscript {
 }
 
 .input {
-  /*visibility: hidden;*/
   position: absolute;
   appearance: none;
   background-color: transparent;
@@ -97,4 +96,8 @@ noscript {
 .input:focus {
   border: none;
   outline: none;
+}
+
+.input::selection, .input::-moz-selection {
+  background-color: transparent;
 }
