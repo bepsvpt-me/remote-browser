@@ -91,5 +91,17 @@ chrome.windows.getCurrent(getInfo, async ({ tabs }) => {
 
       window.rtc.addTrack(track, stream)
     })
+
+    window.rtc.getTransceivers().forEach(transceiver => {
+      if (transceiver.sender.track.kind === 'video') {
+        const options = ['video/AV1', 'video/VP9']
+
+        transceiver.setCodecPreferences(
+          RTCRtpSender.getCapabilities('video')
+            .codecs
+            .filter(codec => options.includes(codec.mimeType))
+        )
+      }
+    })
   })
 })
