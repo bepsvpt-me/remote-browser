@@ -31,6 +31,7 @@ export default async (options) => {
       `--disable-extensions-except=${extension}`,
       '--hide-crash-restore-bubble',
       '--kiosk',
+      '--ignore-gpu-blocklist',
       `--load-extension=${extension}`,
       '--no-crash-upload',
       '--no-default-browser-check',
