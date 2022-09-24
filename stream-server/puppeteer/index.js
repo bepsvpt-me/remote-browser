@@ -3,10 +3,9 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import puppeteer from 'puppeteer'
 
-const extension = path.join(
-  path.dirname(fileURLToPath(import.meta.url)),
-  'extension',
-)
+const dirname = path.dirname(fileURLToPath(import.meta.url))
+
+const extension = path.join(dirname, 'extension')
 const extensionId = 'aahdpjnamionemlcfkodembopehdcipg'
 const eventBlacklist = ['page', 'background_page']
 
@@ -29,6 +28,7 @@ export default async (options) => {
       '--disable-breakpad',
       '--disable-dev-shm-usage',
       `--disable-extensions-except=${extension}`,
+      `--file-url-path-alias=/=${path.join(dirname, 'forbidden')}/`,
       '--hide-crash-restore-bubble',
       '--kiosk',
       '--ignore-gpu-blocklist',
