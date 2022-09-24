@@ -47,12 +47,12 @@ const bindEvents = (socket) => {
   // keyboard event
 
   document.addEventListener('keydown', (e) => {
-    const target = e.target
+    const { key, target } = e
 
     if (target === url) {
       return
     } else if (target === input) {
-      if (e.key !== 'Process' || e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+      if ((key !== 'Process' && key !== 'Enter') || (key === 'Process' && (e.code === 'ArrowLeft' || e.code === 'ArrowRight'))) {
         window.setTimeout(
           () => window.requestAnimationFrame(
             () => composition(target)
@@ -61,26 +61,30 @@ const bindEvents = (socket) => {
         )
       }
 
-      return
-    } else if (['Backspace'].includes(e.key)) {
+      if (key !== 'Enter') {
+        return
+      }
+    } else if (['Backspace'].includes(key)) {
       e.preventDefault()
     }
 
-    socket.emit('keydown', e.key)
+    socket.emit('keydown', key)
   })
 
   document.addEventListener('keyup', (e) => {
-    const target = e.target
+    const { key, target } = e
 
     if (target === url) {
       return
     } else if (target === input) {
-      return
-    } else if (['Backspace'].includes(e.key)) {
+      if (key !== 'Enter') {
+        return
+      }
+    } else if (['Backspace'].includes(key)) {
       e.preventDefault()
     }
 
-    socket.emit('keyup', e.key)
+    socket.emit('keyup', key)
   })
 
   input.addEventListener('compositionupdate', (e) => {

@@ -101,7 +101,8 @@ const input = document.querySelector('input.input')
 
       socket.on('focusout', () => {
         input.style.display = 'none'
-        input.value = ''
+
+        window.requestAnimationFrame(() => input.value = '')
       })
 
       bindEvents(socket)
