@@ -122,7 +122,7 @@ export default (socket) => {
       socket.emit(data.event, data)
     })
 
-    page.goto('https://duckduckgo.com')
+    page.goto('https://www.google.com/')
   })
 
   socket.on('navigation', (url) => {
