@@ -82,3 +82,19 @@ noscript {
   user-select: none;
   z-index: 1;
 }
+
+.input {
+  /*visibility: hidden;*/
+  position: absolute;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  color: transparent;
+  display: none;
+  z-index: 2;
+}
+
+.input:focus {
+  border: none;
+  outline: none;
+}

@@ -4,6 +4,7 @@ const stream = document.querySelector('div.stream')
 const speed = document.querySelector('span.speed')
 const url = document.querySelector('input[name="url"]')
 const video = document.querySelector('video')
+const input = document.querySelector('input.input')
 
 ;(async () => {
   if (!('RTCPeerConnection' in window)) {
@@ -80,7 +81,28 @@ const video = document.querySelector('video')
         socket.emit('navigation', url.value)
       })
 
-      socket.on('navigation', (data) => url.value = data)
+      socket.on('navigation', (data) => {
+        url.value = decodeURIComponent(data.url)
+
+        document.title = data.title
+      })
+
+      socket.on('focusin', (data) => {
+        input.style.left = `calc(${data.left} / ${ratio})`
+        input.style.top = `calc(${data.top} / ${ratio})`
+        input.style.width = `calc(${data.width} / ${ratio})`
+        input.style.height = `calc(${data.height} / ${ratio})`
+        input.style.fontSize = `calc(${data.fontSize} / ${ratio})`
+        input.style.display = 'block'
+        input.value = data.value
+        input.focus()
+        input.setSelectionRange(data.cursor, data.cursor)
+      })
+
+      socket.on('focusout', () => {
+        input.style.display = 'none'
+        input.value = ''
+      })
 
       bindEvents(socket)
 

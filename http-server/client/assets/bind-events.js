@@ -9,7 +9,15 @@ const bindEvents = (socket) => {
     }
   }
 
-  const input = document.querySelector('input[name="url"]')
+  const composition = (target) => {
+    socket.emit('composition', {
+      text: target.value,
+      selectionStart: target.selectionStart,
+      selectionEnd: target.selectionEnd,
+      selectionDirection: target.selectionDirection,
+    })
+  }
+
   const stream = document.querySelector('div.stream')
 
   // mouse event
@@ -39,7 +47,20 @@ const bindEvents = (socket) => {
   // keyboard event
 
   document.addEventListener('keydown', (e) => {
-    if (e.target === input) {
+    const target = e.target
+
+    if (target === url) {
+      return
+    } else if (target === input) {
+      if (e.key !== 'Process' || e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+        window.setTimeout(
+          () => window.requestAnimationFrame(
+            () => composition(target)
+          ),
+          5
+        )
+      }
+
       return
     } else if (['Backspace'].includes(e.key)) {
       e.preventDefault()
@@ -49,7 +70,25 @@ const bindEvents = (socket) => {
   })
 
   document.addEventListener('keyup', (e) => {
+    const target = e.target
+
+    if (target === url) {
+      return
+    } else if (target === input) {
+      return
+    } else if (['Backspace'].includes(e.key)) {
+      e.preventDefault()
+    }
+
     socket.emit('keyup', e.key)
+  })
+
+  input.addEventListener('compositionupdate', (e) => {
+    window.requestAnimationFrame(() => composition(e.target))
+  })
+
+  input.addEventListener('compositionend', (e) => {
+    window.requestAnimationFrame(() => composition(e.target))
   })
 
   // wheel event

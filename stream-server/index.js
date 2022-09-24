@@ -66,8 +66,60 @@ export default (socket) => {
       return socket.to(token).emit('launched')
     }
 
-    page.on('framenavigated', () => {
-      socket.emit('navigation', page.mainFrame().url())
+    page.on('domcontentloaded', async () => {
+      socket.emit('navigation', {
+        url: page.url(),
+        title: await page.title(),
+      })
+
+      page.evaluate(() => {
+        const leave = `[remote-browser] ${JSON.stringify({ event: 'focusout' })}`
+
+        window.addEventListener('focusin', (event) => {
+          const el = event.target
+
+          if (!['input', 'textarea'].includes(el.tagName.toLowerCase())) {
+            return
+          }
+
+          const { top, left } = el.getBoundingClientRect()
+          const style = window.getComputedStyle(el)
+
+          window.requestAnimationFrame(() => {
+            const payload = JSON.stringify({
+              event: 'focusin',
+              left: `(${left}px + ${style.paddingLeft})`,
+              top: `(${top}px + ${style.paddingTop})`,
+              width: `(${el.clientWidth}px - ${style.paddingLeft} - ${style.paddingRight})`,
+              height: `(${el.clientHeight}px - ${style.paddingTop} - ${style.paddingBottom})`,
+              fontSize: style.fontSize,
+              cursor: el.selectionStart,
+              value: el.value,
+            })
+
+            console.log(`[remote-browser] ${payload}`)
+          })
+        })
+
+        window.addEventListener('focusout', () => console.log(leave))
+
+        window.addEventListener('beforeunload', () => console.log(leave));
+      })
+    })
+
+    page.on('console', (cm) => {
+      const keyword = '[remote-browser] '
+      const msg = cm.text()
+
+      if (!msg.startsWith(keyword)) {
+        return
+      }
+
+      console.log(ip, 'console', msg)
+
+      const data = JSON.parse(msg.substring(keyword.length))
+
+      socket.emit(data.event, data)
     })
 
     page.goto('https://duckduckgo.com')
@@ -131,7 +183,25 @@ export default (socket) => {
     page.keyboard.up(key)
   })
 
-  // fix element scroll
+  socket.on('composition', (data) => {
+    if (!launched) {
+      return
+    }
+
+    console.log(ip, 'composition', data)
+
+    page.evaluate(({ text, selectionStart, selectionEnd, selectionDirection }) => {
+      const el = document.activeElement
+
+      if (!['input', 'textarea'].includes(el.tagName.toLowerCase())) {
+        return
+      }
+
+      el.value = text
+      el.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
+    }, data)
+  })
+
   socket.on('wheel', (delta) => {
     if (!launched) {
       return
